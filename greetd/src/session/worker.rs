@@ -52,6 +52,7 @@ pub enum ParentToSessionChild<'a> {
         service: &'a str,
         class: SessionClass,
         user: &'a str,
+        seat: &'a str,
         authenticate: bool,
         tty: TerminalMode,
         source_profile: bool,
@@ -100,12 +101,13 @@ impl SessionChildToParent {
 /// started by Session::start.
 fn worker(sock: &UnixDatagram) -> Result<(), Error> {
     let mut data = [0; 10240];
-    let (service, class, user, authenticate, tty, source_profile, listener_path) =
+    let (service, class, user, seat, authenticate, tty, source_profile, listener_path) =
         match ParentToSessionChild::recv(sock, &mut data)? {
             ParentToSessionChild::InitiateLogin {
                 service,
                 class,
                 user,
+                seat,
                 authenticate,
                 tty,
                 source_profile,
@@ -114,6 +116,7 @@ fn worker(sock: &UnixDatagram) -> Result<(), Error> {
                 service,
                 class,
                 user,
+                seat,
                 authenticate,
                 tty,
                 source_profile,
@@ -142,6 +145,8 @@ fn worker(sock: &UnixDatagram) -> Result<(), Error> {
     if let SessionClass::Greeter = class {
         pam.putenv(&format!("GREETD_SOCK={}", &listener_path))?;
     }
+
+    pam.putenv(&format!("XDG_SEAT={}", seat))?;
 
     // Fetch our arguments from the parent.
     let (env, cmd) = match ParentToSessionChild::recv(sock, &mut data)? {
@@ -203,7 +208,6 @@ fn worker(sock: &UnixDatagram) -> Result<(), Error> {
     // specifically, pam_systemd.so), as well as make it easier to gather
     // and set all environment variables later.
     let prepared_env = [
-        "XDG_SEAT=seat0".to_string(),
         format!("XDG_SESSION_CLASS={}", class.as_str()),
         format!("USER={}", user.name),
         format!("LOGNAME={}", user.name),

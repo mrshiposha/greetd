@@ -239,6 +239,7 @@ pub async fn main(config: Config) -> Result<(), Error> {
         config.file.default_session.user,
         greeter_service.to_string(),
         service.to_string(),
+        config.file.general.seat.clone(),
         term_mode.clone(),
         config.file.general.source_profile,
         config.file.general.runfile,

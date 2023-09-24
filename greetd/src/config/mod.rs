@@ -41,6 +41,7 @@ pub struct ConfigGeneral {
     pub source_profile: bool,
     pub runfile: String,
     pub service: String,
+    pub seat: String,
 }
 
 impl Default for ConfigGeneral {
@@ -49,6 +50,7 @@ impl Default for ConfigGeneral {
             source_profile: true,
             runfile: RUNFILE.to_string(),
             service: GENERAL_SERVICE.to_string(),
+            seat: "seat0".to_string(),
         }
     }
 }
@@ -127,6 +129,10 @@ fn parse_new_config(config: &HashMap<&str, HashMap<&str, &str>>) -> Result<Confi
             let service = maybe_unquote(servicestr)
                 .map_err(|e| format!("unable to read general.service: {}", e))?;
 
+            let seatstr = section.get("seat").unwrap_or(&"seat0");
+            let seat = maybe_unquote(seatstr)
+                .map_err(|e| format!("unable to read default_session.seat: {}", e))?;
+
             ConfigGeneral {
                 source_profile: section
                     .get("source_profile")
@@ -135,6 +141,7 @@ fn parse_new_config(config: &HashMap<&str, HashMap<&str, &str>>) -> Result<Confi
                     .map_err(|e| format!("could not parse source_profile: {}", e))?,
                 runfile,
                 service,
+                seat,
             }
         }
 
@@ -456,6 +463,7 @@ runfile = \"/path/to/greetd.state\"
                     source_profile: false,
                     runfile: "/path/to/greetd.state".to_string(),
                     service: "greetd".to_string(),
+                    seat: "seat0".to_string(),
                 },
                 initial_session: None,
             }
