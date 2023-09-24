@@ -203,7 +203,6 @@ fn worker(sock: &UnixDatagram) -> Result<(), Error> {
     // specifically, pam_systemd.so), as well as make it easier to gather
     // and set all environment variables later.
     let prepared_env = [
-        "XDG_SEAT=seat0".to_string(),
         format!("XDG_SESSION_CLASS={}", class.as_str()),
         format!("USER={}", user.name),
         format!("LOGNAME={}", user.name),
@@ -214,8 +213,19 @@ fn worker(sock: &UnixDatagram) -> Result<(), Error> {
             env::var("TERM").unwrap_or_else(|_| "linux".to_string())
         ),
     ];
+
+    let mut seat_set = false;
+
     for e in env.iter().chain(prepared_env.iter()) {
+        if e.starts_with("XDG_SEAT=") {
+            seat_set = true;
+        }
+
         pam.putenv(e)?;
+    }
+
+    if !seat_set {
+        pam.putenv("XDG_SEAT=seat0")?;
     }
 
     // Session time!
