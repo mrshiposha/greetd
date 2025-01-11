@@ -18,6 +18,9 @@ See the [wiki](https://man.sr.ht/~kennylevinsen/greetd) for FAQ, guides for comm
 - [wlgreet](https://git.sr.ht/~kennylevinsen/wlgreet) - Wayland greeter (using wlr-layer-shell, to be used with something like `sway`)
 - [tuigreet](https://github.com/apognu/tuigreet) - Console UI greeter (using tui-rs)
 - [ReGreet](https://github.com/rharish101/ReGreet) - Clean and customizable GTK4 based greeter (to be used with something like `sway`)
+- [marine_greetdm](https://github.com/Decodetalkers/marine_greetdm) - A cli greeter, by rustyline and without gui. It can configure enviroment variables for special desktops.
+- [greetd-qmlgreet](https://github.com/Decodetalkers/greetd-qmlgreet) - Qt6 qml greetd (using ext-session-shell, to be used with something like `river` and `sway`)
+- [Phog](https://gitlab.com/mobian1/phog) - A greetd-compatible greeter for mobile devices like Purism's Librem 5 and Pine64's PinePhone.
 
 Patches expanding the list welcome.
 

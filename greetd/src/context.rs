@@ -12,6 +12,7 @@ use tokio::{sync::RwLock, time::sleep};
 
 use crate::{
     error::Error,
+    scrambler::Scrambler,
     session::{
         interface::{Session, SessionChild, SessionState},
         worker::{AuthMessageType as SessAuthMessageType, SessionClass, TerminalMode},
@@ -257,8 +258,16 @@ impl Context {
     pub async fn post_response(&self, answer: Option<String>) -> Result<(), Error> {
         let mut inner = self.inner.write().await;
         match &mut inner.configuring {
-            Some(s) => s.session.post_response(answer).await,
-            None => Err("no session under configuration".into()),
+            Some(s) => match s.session.get_state().await? {
+                SessionState::Ready => Err("session has no pending questions".into()),
+                _ => s.session.post_response(answer).await,
+            },
+            None => {
+                if let Some(mut answer) = answer {
+                    answer.scramble();
+                }
+                return Err("no session under configuration".into());
+            }
         }
     }
 

@@ -31,6 +31,7 @@
 //! information about the request and response types, as well as their
 //! serialization.
 //!
+#![cfg_attr(docsrs, feature(doc_cfg))]
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "codec")]
@@ -48,7 +49,7 @@ pub mod codec;
 ///    "username": "bob"
 /// }
 /// ```
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
 pub enum Request {
@@ -88,7 +89,7 @@ pub enum Request {
 }
 
 /// An error type for Response::Error. Serialized as snake_case.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorType {
     /// A generic error. See the error description for more details.
@@ -99,7 +100,7 @@ pub enum ErrorType {
 }
 
 /// A message type for a Response::AuthMessage. Serialized as snake_case.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum AuthMessageType {
     /// A question whose answer should be visible during input.
@@ -127,7 +128,7 @@ pub enum AuthMessageType {
 ///    "message_type": "secret"
 /// }
 /// ```
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Response {

@@ -1,6 +1,6 @@
 [package]
 name = "agreety"
-version = "0.9.0"
+version = "0.10.3"
 authors = ["Kenny Levinsen"]
 edition = "2018"
 license = "GPL-3.0-only"
@@ -13,4 +13,4 @@ inish = { path = "../inish"}
 rpassword = "5.0"
 getopts = "0.2"
 enquote = "1.1"
-nix = "0.26"
+nix = "0.27"
